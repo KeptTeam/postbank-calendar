@@ -1,6 +1,10 @@
 import {date} from 'quasar'
 
-export let events = []
+export let events = window.plugins ? [] : [
+  {date: new Date('2018-06-23T22:00:00'), title: 'Elemria meeting', id: 0},
+  {date: new Date('2018-06-23T22:00:00'), title: 'test event', id: 1},
+  {date: new Date('2018-06-25T22:00:00'), title: 'test event', id: 2}
+]
 export let eventsById = {}
 
 function transformEvent (event) {
@@ -17,12 +21,14 @@ function transformEvent (event) {
 }
 
 export function fetch (from, done) {
+  if (!window.plugins) return
   from = from || new Date()
   let to = date.addToDate(from, {days: 7})
   window.plugins.calendar.listEventsInRange(from, to, function (newEvents) {
     for (let event of newEvents) {
       event = transformEvent(event)
       if (!eventsById[event.id]) {
+        eventsById[event.id] = event
         events.push(event)
       }
     }
@@ -30,9 +36,11 @@ export function fetch (from, done) {
       return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
     })
     if (done) done()
+  }, function (err) {
+    console.error(err)
   })
 }
 
 document.addEventListener('deviceready', () => {
-  fetch()
+  // fetch()
 }, false)
