@@ -40,7 +40,7 @@ module.exports = function (ctx) {
       open: true // opens browser window automatically
     },
     // framework: 'all' --- includes everything; for dev only!
-    framework: {
+    framework: 'all' || {
       components: [
         'QLayout',
         'QLayoutHeader',
