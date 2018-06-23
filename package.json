@@ -16,6 +16,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
+    "babel-polyfill": "^6.26.0",
+    "buble": "^0.19.3",
+    "buble-loader": "^0.5.1",
     "eslint": "^4.18.2",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^4.0.1",

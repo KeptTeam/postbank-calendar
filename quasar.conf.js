@@ -1,4 +1,5 @@
 // Configuration for your app
+const path = require('path')
 
 module.exports = function (ctx) {
   return {
@@ -26,12 +27,23 @@ module.exports = function (ctx) {
       // analyze: true,
       // extractCSS: false,
       extendWebpack (cfg) {
+        // console.log(cfg.entry)
+        // cfg.entry.polyfill = ['babel-polyfill']
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /(node_modules|quasar)/
         })
+        // cfg.module.rules.push({
+        //   enforce: 'pre',
+        //   test: /\.js$/,
+        //   loader: 'buble-loader',
+        //   include: path.join(__dirname, 'node_modules'),
+        //   options: {
+        //     objectAssign: 'Object.assign'
+        //   }
+        // })
       }
     },
     devServer: {
