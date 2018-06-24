@@ -9,10 +9,12 @@ export let eventsById = {}
 
 function transformEvent (event) {
   let start = new Date(event.dtstart || event.startDate)
-  let duration = date.getDateDiff(new Date(event.dtend || event.endDate), start, 'hours')
+  let end = new Date(event.dtend || event.endDate)
+  let duration = date.getDateDiff(end, start, 'minutes')
   return {
-    date: start,
-    duration: duration,
+    start: start,
+    end: end,
+    duration: duration / 60,
     title: event.title,
     location: event.location || event.eventLocation,
     id: event.id,
