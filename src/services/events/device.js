@@ -60,4 +60,25 @@ export class DeviceEventBackend {
       console.error(err)
     })
   }
+
+  getEvent (id, done) {
+    let opts = window.plugins.calendar.getCalendarOptions()
+    opts.id = id
+    window.plugins.calendar.findEventWithOptions('', '', '', new Date(), new Date(), opts, function (event) {
+      if (event && event.id === id) {
+        let start = new Date(event.dtstart || event.startDate)
+        let end = new Date(event.dtend || event.endDate)
+        done({
+          id: event.id,
+          start: start,
+          end: end,
+          title: event.title,
+          description: event.notes || event.message,
+          location: event.location || event.eventLocation
+        })
+      }
+    }, function (err) {
+      console.error(err)
+    })
+  }
 }

@@ -42,16 +42,28 @@
 
 <script>
 import { date } from 'quasar'
+import { getEvent, modifyOrInsertEvent } from '../../services/events'
 
 export default {
   name: 'PageIndex',
+  props: ['id'],
   data () {
     return {
-      event: {start: new Date('2018-06-23T22:00:00'), end: new Date('2018-08-23T22:00:00'), title: '10% off', id: 0, location: '', description: ''}
+      event: getEvent(this.id) || {
+        start: date.startOfDate(new Date(), 'day'),
+        end: date.endOfDate(new Date(), 'day'),
+        title: '',
+        location: '',
+        description: ''
+      }
     }
   },
   methods: {
-    formatDate: date.formatDate
+    save () {
+      modifyOrInsertEvent(this.event, () => {
+        this.$router.replace('/admin/promotions')
+      })
+    }
   }
 }
 </script>

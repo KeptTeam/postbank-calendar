@@ -5,7 +5,7 @@ import {DeviceEventBackend} from './device'
 import {FirebaseEventBackend} from './firebase'
 
 let backends = []
-for (let BackendClass of [FirebaseEventBackend, DeviceEventBackend]) {
+for (let BackendClass of [DeviceEventBackend, FirebaseEventBackend]) {
   if (BackendClass.canInsert()) {
     let backend = new BackendClass()
     backend.id = backends.length
@@ -40,7 +40,7 @@ export function getEvent (id) {
 export function modifyOrInsertEvent (modifiedEvent, done) {
   if (modifiedEvent.id) {
     let splitPos = modifiedEvent.id.indexOf('-')
-    let backend = backends[modifiedEvent.substr(0, splitPos)]
+    let backend = backends[modifiedEvent.id.substr(0, splitPos)]
     let id = modifiedEvent.substr(splitPos)
     backend.modifyEvent(id, event, next)
   } else {
@@ -50,7 +50,7 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
     }
   }
   function next () {
-    events.splice(events.indexOf(eventsById[modifiedEvent.id]))
+    events.splice(events.indexOf(eventsById[modifiedEvent.id]), 1)
     delete eventsById[modifiedEvent.id]
     fetch(modifiedEvent.start, modifiedEvent.end, done)
   }
@@ -70,7 +70,8 @@ function insertEvents (newEvents, fromBackend) {
   for (let event of newEvents) {
     event = Object.assign({}, event, {
       duration: date.getDateDiff(event.end, event.start, 'minutes'),
-      id: fromBackend.id + '-' + event.id
+      id: fromBackend.id + '-' + event.id,
+      backend: fromBackend.name
     })
     if (!eventsById[event.id]) {
       eventsById[event.id] = event

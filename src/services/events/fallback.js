@@ -35,6 +35,14 @@ export class FallbackEventBackend {
     return !!window.localStorage
   }
 
+  delete (id, done) {
+    this.events[id] = null
+    window.localStorage.setItem('events', JSON.stringify(this.events))
+
+    setTimeout(done)
+    return true
+  }
+
   modifyEvent (id, event, done) {
     Object.assign(this.events[id], event)
     this.events[id].id = id
@@ -54,9 +62,16 @@ export class FallbackEventBackend {
   }
 
   fetch (from, to, done) {
-    let events = this.events.filter(x => (x.start.getTime() <= to.getTime() && x.end.getTime() >= from.getTime()))
+    let events = this.events.filter(x => x !== null && (x.start.getTime() <= to.getTime() && x.end.getTime() >= from.getTime()))
     setTimeout(function () {
       done(events)
+    }, 10)
+  }
+
+  getEvent (id, done) {
+    let event = this.events[id]
+    setTimeout(function () {
+      done(event)
     }, 10)
   }
 }

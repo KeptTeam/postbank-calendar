@@ -2,7 +2,7 @@
 <q-page class="">
 
 <q-list>
-  <template v-for="event in events">
+  <template v-for="event in events" v-if="event.backend === 'firebase'">
     <q-card :key="event.id" v-ripple class="relative-position" @click.native="$router.push('/admin/promotion/' + event.id)">
       <q-card-title>
         {{formatDate(event.start, 'DD MMM YYYY')}} - {{formatDate(event.end, 'DD MMM YYYY')}} | {{event.title}}
@@ -29,16 +29,13 @@
 
 <script>
 import { date } from 'quasar'
+import { events } from '../../services/events'
 
 export default {
   name: 'PageIndex',
   data () {
     return {
-      events: [
-        {start: new Date('2018-06-23T22:00:00'), end: new Date('2018-08-23T22:00:00'), title: '10% off', id: 0},
-        {start: new Date('2018-06-27T22:00:00'), end: new Date('2018-08-28T22:00:00'), title: '10% off', id: 1},
-        {start: new Date('2018-06-30T22:00:00'), end: new Date('2018-08-30T22:00:00'), title: '10% off', id: 2}
-      ]
+      events: events
     }
   },
   methods: {

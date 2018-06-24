@@ -42,6 +42,36 @@ export class FirebaseEventBackend {
       })
   }
 
+  getEvent (id, done) {
+    this.collection.doc(id).get()
+      .then(function (doc) {
+        let data = doc.data()
+        done({
+          id: doc.id,
+          start: data.start.toDate(),
+          end: data.end.toDate(),
+          title: data.title,
+          location: data.location,
+          description: data.description
+        })
+      })
+      .catch(function (err) {
+        console.error(err)
+      })
+
+    return true
+  }
+
+  deleteEvent (id, done) {
+    this.collection.doc(id).delete()
+      .then(done)
+      .catch(function (err) {
+        console.error(err)
+      })
+
+    return true
+  }
+
   modifyEvent (id, event, done) {
     this.collection.doc(id).set({
       start: event.start,
