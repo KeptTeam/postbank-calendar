@@ -1,9 +1,9 @@
 import {date} from 'quasar'
 
 export let events = window.plugins ? [] : [
-  {date: new Date('2018-06-23T22:00:00'), title: 'Elemria meeting', id: 0},
-  {date: new Date('2018-06-23T22:00:00'), title: 'test event', id: 1},
-  {date: new Date('2018-06-25T22:00:00'), title: 'test event', id: 2}
+  {start: new Date('2018-06-23T22:00:00'), end: new Date('2018-08-23T22:00:00'), title: 'Elemria meeting', id: 0},
+  {start: new Date('2018-06-23T22:00:00'), title: 'test event', id: 1},
+  {start: new Date('2018-06-25T22:00:00'), title: 'test event', id: 2}
 ]
 export let eventsById = {}
 

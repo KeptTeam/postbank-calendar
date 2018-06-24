@@ -20,13 +20,13 @@
         link
         inset-delimiter
       >
-        <q-item @click.native="openURL('http://quasar-framework.org')">
+        <q-item @click.native="$router.push('/admin/promotions')">
           <q-item-side icon="add_shopping_cart" />
           <q-item-main label="Промоции" />
         </q-item>
-        <q-item @click.native="openURL('https://github.com/quasarframework/')">
-          <q-item-side icon="attach_money" />
-          <q-item-main label="Плащания" />
+        <q-item @click.native="$router.push('/')">
+          <q-item-side icon="home" />
+          <q-item-main label="Начало" />
         </q-item>
       </q-list>
     </q-layout-drawer>
