@@ -1,5 +1,6 @@
 export class FallbackEventBackend {
   constructor () {
+    this.name = 'fallback'
     if (window.localStorage.getItem('events')) {
       this.events = JSON.parse(window.localStorage.getItem('events'))
       for (let event of this.events) {

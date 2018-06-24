@@ -1,19 +1,37 @@
 export class DeviceEventBackend {
+  constructor () {
+    this.name = 'device'
+  }
   static canInsert () {
     return !!(window.plugins && window.plugins.calendar)
   }
 
-  modifyEvent () {
-    return false
+  modifyEvent (id, event, done) {
+    this.deleteEvent(id, () => {
+      this.createEvent(event, done)
+    })
+  }
+
+  deleteEvent (id, done) {
+    window.plugins.calendar.deleteEventById(id, undefined,
+      function (result) {
+        done()
+      },
+      function (err) {
+        console.error(err)
+      })
   }
 
   createEvent (event, done) {
-    window.plugins.calendar.createEvent(
+    let opts = window.plugins.calendar.getCalendarOptions()
+    if (event.recurrence) opts.recurrence = event.recurrence
+    window.plugins.calendar.createEventWithOptions(
       event.title,
       event.location,
       event.description,
       event.start,
       event.end,
+      opts,
       function (result) {
         done()
       },

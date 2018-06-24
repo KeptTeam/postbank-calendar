@@ -1,10 +1,11 @@
 import {date} from 'quasar'
 
 import {DeviceEventBackend} from './device'
-import {FallbackEventBackend} from './fallback'
+// import {FallbackEventBackend} from './fallback'
+import {FirebaseEventBackend} from './firebase'
 
 let backends = []
-for (let BackendClass of [DeviceEventBackend, FallbackEventBackend]) {
+for (let BackendClass of [FirebaseEventBackend, DeviceEventBackend]) {
   if (BackendClass.canInsert()) {
     let backend = new BackendClass()
     backend.id = backends.length
@@ -44,10 +45,13 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
     backend.modifyEvent(id, event, next)
   } else {
     for (let backend of backends) {
+      if (modifiedEvent.backend && modifiedEvent.backend !== backend.name) continue
       if (backend.createEvent(modifiedEvent, next)) break
     }
   }
   function next () {
+    events.splice(events.indexOf(eventsById[modifiedEvent.id]))
+    delete eventsById[modifiedEvent.id]
     fetch(modifiedEvent.start, modifiedEvent.end, done)
   }
 }

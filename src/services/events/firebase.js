@@ -10,7 +10,10 @@ firebase.initializeApp({
 
 export class FirebaseEventBackend {
   constructor () {
-    this.collection = firebase.firestore().collection('promotions')
+    this.name = 'firebase'
+    let store = firebase.firestore()
+    store.settings({timestampsInSnapshots: true})
+    this.collection = store.collection('promotions')
   }
 
   static canInsert () {
@@ -20,7 +23,19 @@ export class FirebaseEventBackend {
   fetch (from, to, done) {
     this.collection.where('start', '>=', from).where('start', '<=', to).get()
       .then(function (docs) {
-        done(docs.map(x => Object.assign(x.data(), {id: x.id})))
+        let events = []
+        docs.forEach(doc => {
+          let data = doc.data()
+          events.push({
+            id: doc.id,
+            start: data.start.toDate(),
+            end: data.end.toDate(),
+            title: data.title,
+            location: data.location,
+            description: data.description
+          })
+        })
+        done(events)
       })
       .catch(function (err) {
         console.error(err)
@@ -28,30 +43,34 @@ export class FirebaseEventBackend {
   }
 
   modifyEvent (id, event, done) {
-    Object.assign(this.events[id], event)
-    window.localStorage.setItem('events', JSON.stringify(this.events))
-
-    setTimeout(done)
-    return true
-  }
-
-  createEvent (event, done) {
-    this.collection.set({
+    this.collection.doc(id).set({
       start: event.start,
       end: event.end,
       title: event.title,
       location: event.location,
       description: event.description
     })
-      .then(function (docs) {
-        done(docs.map(x => Object.assign(x.data(), {id: x.id})))
-      })
+      .then(done)
       .catch(function (err) {
         console.error(err)
       })
-    this.events.push(Object.assign({}, event, {id: this.events.length}))
 
-    setTimeout(done)
+    return true
+  }
+
+  createEvent (event, done) {
+    this.collection.add({
+      start: event.start,
+      end: event.end,
+      title: event.title || '',
+      location: event.location || '',
+      description: event.description || ''
+    })
+      .then(done)
+      .catch(function (err) {
+        console.error(err)
+      })
+
     return true
   }
 }
