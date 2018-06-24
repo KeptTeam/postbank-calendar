@@ -12,8 +12,8 @@
     </q-card>
     <q-context-menu>
       <q-list link separator no-border style="min-width: 150px; max-height: 300px;">
-        <q-item><q-item-main label="Редактирай" /></q-item>
-        <q-item><q-item-main label="Изтрий" /></q-item>
+        <q-item @click.native="$router.push('/event/' + event.id)"><q-item-main label="Редактирай"/></q-item>
+        <q-item><q-item-main @click.native="delete(event.id)" label="Изтрий" /></q-item>
       </q-list>
     </q-context-menu>
   </div>
@@ -27,7 +27,7 @@
   <q-btn
     round
     color="secondary"
-    to="/create"
+    to="/event/"
     size="lg"
     icon="add"
   />
@@ -40,7 +40,7 @@
 
 <script>
 import { date } from 'quasar'
-import { events, fetch } from '../services/events'
+import { events, fetch, deleteEvent } from '../services/events'
 
 export default {
   name: 'PageIndex',
@@ -54,12 +54,15 @@ export default {
   },
   methods: {
     formatDate: date.formatDate,
-    loadMore: function (i, done) {
+    loadMore (i, done) {
       let from = this.reachedDate
       this.reachedDate = date.addToDate(this.reachedDate, {days: 7})
       fetch(from, this.reachedDate, (result) => {
         if (!result) this.loadMore(i, done)
       })
+    },
+    delete (id) {
+      deleteEvent(id, function () {})
     }
   }
 }

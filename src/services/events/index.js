@@ -56,6 +56,16 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
   }
 }
 
+export function deleteEvent (id, done) {
+  let splitPos = id.indexOf('-')
+  let backend = backends[id.substr(0, splitPos)]
+  id = id.substr(splitPos)
+  backend.deleteEvent(id, event, function () {
+    events.splice(events.indexOf(eventsById[id]), 1)
+    delete eventsById[id]
+  })
+}
+
 function insertEvents (newEvents, fromBackend) {
   for (let event of newEvents) {
     event = Object.assign({}, event, {

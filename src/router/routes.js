@@ -5,7 +5,7 @@ export default [
     component: () => import('layouts/default'),
     children: [
       { path: '', component: () => import('pages/index') },
-      { path: 'create', component: () => import('pages/create-event') }
+      { path: 'event/:id?', component: () => import('pages/edit-event') }
     ]
   },
 

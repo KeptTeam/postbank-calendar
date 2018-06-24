@@ -55,14 +55,15 @@
 </style>
 
 <script>
-import {modifyOrInsertEvent} from '../services/events'
+import { getEvent, modifyOrInsertEvent } from '../services/events'
 import { date } from 'quasar'
 
 export default {
   name: 'PageIndex',
+  props: ['id'],
   data () {
     return {
-      event: {
+      event: getEvent(this.id) || {
         start: new Date(),
         end: new Date(),
         title: '',
