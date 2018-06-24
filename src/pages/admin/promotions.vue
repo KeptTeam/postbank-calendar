@@ -10,7 +10,7 @@
       </q-card-title>
       <q-context-menu>
         <q-list link separator no-border style="min-width: 150px; max-height: 300px;">
-          <q-item><q-item-main @click.native="remove(event.id)" label="Изтрий" /></q-item>
+          <q-item v-close-overlay @click.native="remove(event.id)"><q-item-main label="Изтрий" /></q-item>
         </q-list>
       </q-context-menu>
     </q-card>
@@ -34,7 +34,7 @@
 
 <script>
 import { date } from 'quasar'
-import { events, deleteEvent } from '../../services/events'
+import { events, fetch, deleteEvent } from '../../services/events'
 
 export default {
   name: 'PageIndex',
@@ -48,6 +48,11 @@ export default {
     remove (id) {
       deleteEvent(id, function () {})
     }
+  },
+  mounted () {
+    let n = new Date()
+    n.setMonth(n.getMonth() + 1)
+    fetch(new Date(), n, () => {})
   }
 }
 </script>

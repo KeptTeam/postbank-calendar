@@ -21,7 +21,8 @@ export class FirebaseEventBackend {
   }
 
   fetch (from, to, done) {
-    this.collection.where('start', '>=', from).where('start', '<=', to).get()
+    // this.collection.where('start', '>=', from).where('start', '<=', to).get()
+    this.collection.get()
       .then(function (docs) {
         let events = []
         docs.forEach(doc => {
