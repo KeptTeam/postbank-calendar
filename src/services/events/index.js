@@ -29,10 +29,16 @@ export function fetch (from, to, done) {
   }
 }
 
-export function getEvent (id) {
+export function getEvent (id, done) {
   if (eventsById[id]) {
-    return Object.assign({}, eventsById[id])
-  } else {
+    done(Object.assign({}, eventsById[id]))
+  } else if (id) {
+    let splitPos = id.indexOf('-')
+    let backend = backends[id.substr(0, splitPos)]
+    id = id.substr(splitPos + 1)
+    backend.getEvent(id, function (event) {
+      done(insertEvents([event], backend)[0])
+    })
     return undefined
   }
 }
@@ -41,8 +47,8 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
   if (modifiedEvent.id) {
     let splitPos = modifiedEvent.id.indexOf('-')
     let backend = backends[modifiedEvent.id.substr(0, splitPos)]
-    let id = modifiedEvent.substr(splitPos)
-    backend.modifyEvent(id, event, next)
+    let id = modifiedEvent.id.substr(splitPos + 1)
+    backend.modifyEvent(id, modifiedEvent, next)
   } else {
     for (let backend of backends) {
       if (modifiedEvent.backend && modifiedEvent.backend !== backend.name) continue
@@ -50,8 +56,10 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
     }
   }
   function next () {
-    events.splice(events.indexOf(eventsById[modifiedEvent.id]), 1)
-    delete eventsById[modifiedEvent.id]
+    if (modifiedEvent.id) {
+      events.splice(events.indexOf(eventsById[modifiedEvent.id]), 1)
+      delete eventsById[modifiedEvent.id]
+    }
     fetch(modifiedEvent.start, modifiedEvent.end, done)
   }
 }
@@ -59,14 +67,15 @@ export function modifyOrInsertEvent (modifiedEvent, done) {
 export function deleteEvent (id, done) {
   let splitPos = id.indexOf('-')
   let backend = backends[id.substr(0, splitPos)]
-  id = id.substr(splitPos)
-  backend.deleteEvent(id, event, function () {
+  id = id.substr(splitPos + 1)
+  backend.deleteEvent(id, function () {
     events.splice(events.indexOf(eventsById[id]), 1)
     delete eventsById[id]
   })
 }
 
 function insertEvents (newEvents, fromBackend) {
+  let result = []
   for (let event of newEvents) {
     event = Object.assign({}, event, {
       duration: date.getDateDiff(event.end, event.start, 'minutes'),
@@ -76,11 +85,15 @@ function insertEvents (newEvents, fromBackend) {
     if (!eventsById[event.id]) {
       eventsById[event.id] = event
       events.push(event)
+      result.push(event)
+    } else {
+      result.push(eventsById[event.id])
     }
   }
   events.sort(function (a, b) {
     return a.start > b.start ? 1 : a.start < b.start ? -1 : 0
   })
+  return result
 }
 
 document.addEventListener('deviceready', () => {

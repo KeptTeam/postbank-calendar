@@ -63,22 +63,32 @@ export default {
   props: ['id'],
   data () {
     return {
-      event: getEvent(this.id) || {
-        start: new Date(),
-        end: new Date(),
-        title: '',
-        id: 0,
-        location: '',
-        description: '',
-        fullDay: false,
-        recurrence: ''
+      event: {}
+    }
+  },
+  watch: {
+    id: {
+      immediate: true,
+      handler () {
+        getEvent(this.id, (event) => {
+          this.event = event || {
+            start: new Date(),
+            end: new Date(),
+            title: '',
+            id: 0,
+            location: '',
+            description: '',
+            fullDay: false,
+            recurrence: ''
+          }
+        })
       }
     }
   },
   methods: {
     save () {
       modifyOrInsertEvent(this.event, () => {
-        this.$router.push('/')
+        this.$router.replace('/')
       })
     }
   },

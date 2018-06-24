@@ -23,6 +23,7 @@
     color="secondary"
     size="lg"
     icon="save"
+    @click="save"
   />
 </q-page-sticky>
 <q-page-sticky position="bottom-right" :offset="[18, 80]">
@@ -49,12 +50,24 @@ export default {
   props: ['id'],
   data () {
     return {
-      event: getEvent(this.id) || {
-        start: date.startOfDate(new Date(), 'day'),
-        end: date.endOfDate(new Date(), 'day'),
-        title: '',
-        location: '',
-        description: ''
+      event: {}
+    }
+  },
+  watch: {
+    id: {
+      immediate: true,
+      handler () {
+        getEvent(this.id, (event) => {
+          this.event = event || {
+            start: date.startOfDate(new Date(), 'day'),
+            end: date.endOfDate(new Date(), 'day'),
+            title: '',
+            location: '',
+            description: '',
+            fullDay: false,
+            recurrence: ''
+          }
+        })
       }
     }
   },

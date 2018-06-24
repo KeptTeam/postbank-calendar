@@ -28,8 +28,8 @@ export class FirebaseEventBackend {
           let data = doc.data()
           events.push({
             id: doc.id,
-            start: data.start.toDate(),
-            end: data.end.toDate(),
+            start: data.start.toDate ? data.start.toDate() : new Date(data.start),
+            end: data.end.toDate ? data.end.toDate() : new Date(data.end),
             title: data.title,
             location: data.location,
             description: data.description
@@ -45,15 +45,19 @@ export class FirebaseEventBackend {
   getEvent (id, done) {
     this.collection.doc(id).get()
       .then(function (doc) {
-        let data = doc.data()
-        done({
-          id: doc.id,
-          start: data.start.toDate(),
-          end: data.end.toDate(),
-          title: data.title,
-          location: data.location,
-          description: data.description
-        })
+        if (doc.exists) {
+          let data = doc.data()
+          done({
+            id: doc.id,
+            start: data.start.toDate ? data.start.toDate() : new Date(data.start),
+            end: data.end.toDate ? data.end.toDate() : new Date(data.end),
+            title: data.title,
+            location: data.location,
+            description: data.description
+          })
+        } else {
+          done(undefined)
+        }
       })
       .catch(function (err) {
         console.error(err)
