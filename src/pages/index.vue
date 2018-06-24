@@ -13,7 +13,7 @@
     <q-context-menu>
       <q-list link separator no-border style="min-width: 150px; max-height: 300px;">
         <q-item @click.native="$router.push('/event/' + event.id)"><q-item-main label="Редактирай"/></q-item>
-        <q-item><q-item-main @click.native="delete(event.id)" label="Изтрий" /></q-item>
+        <q-item><q-item-main @click.native="remove(event.id)" label="Изтрий" /></q-item>
       </q-list>
     </q-context-menu>
   </div>
@@ -61,7 +61,7 @@ export default {
         if (!result) this.loadMore(i, done)
       })
     },
-    delete (id) {
+    remove (id) {
       deleteEvent(id, function () {})
     }
   }
