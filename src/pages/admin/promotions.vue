@@ -8,6 +8,11 @@
         {{formatDate(event.start, 'DD MMM YYYY')}} - {{formatDate(event.end, 'DD MMM YYYY')}} | {{event.title}}
          <q-icon slot="right" name="edit" />
       </q-card-title>
+      <q-context-menu>
+        <q-list link separator no-border style="min-width: 150px; max-height: 300px;">
+          <q-item><q-item-main @click.native="remove(event.id)" label="Изтрий" /></q-item>
+        </q-list>
+      </q-context-menu>
     </q-card>
   </template>
 </q-list>
@@ -29,7 +34,7 @@
 
 <script>
 import { date } from 'quasar'
-import { events } from '../../services/events'
+import { events, deleteEvent } from '../../services/events'
 
 export default {
   name: 'PageIndex',
@@ -39,7 +44,10 @@ export default {
     }
   },
   methods: {
-    formatDate: date.formatDate
+    formatDate: date.formatDate,
+    remove (id) {
+      deleteEvent(id, function () {})
+    }
   }
 }
 </script>
