@@ -10,6 +10,10 @@
         <q-toolbar-title>
           PostBank Календар
         </q-toolbar-title>
+        <img
+        src="~assets/postbank-logo.png"
+        style="height: 2.5em"
+        >
       </q-toolbar>
     </q-layout-header>
 

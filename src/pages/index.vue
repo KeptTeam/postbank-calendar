@@ -49,7 +49,8 @@ export default {
     return {
       events: events,
       fromDate: fromDate,
-      reachedDate: fromDate
+      reachedDate: fromDate,
+      monthNames: ['Ян', 'Фев', 'Март', 'Апр', 'Май', 'Юни', 'Юли', 'Авг', 'Сеп', 'Окт', 'Ноем', 'Дек']
     }
   },
   methods: {
