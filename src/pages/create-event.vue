@@ -13,11 +13,21 @@
 <q-field label="Дата">
   <q-datetime v-model="date" type="date" />
 </q-field>
-<q-field label="От">
+<q-field label="Цял ден">
+  <q-toggle v-model="event.fullDay" />
+</q-field>
+<q-field label="От" v-if="!event.fullDay">
   <q-datetime v-model="event.start" type="time" />
 </q-field>
-<q-field label="До">
+<q-field label="До" v-if="!event.fullDay">
   <q-datetime v-model="event.end" type="time" />
+</q-field>
+<q-field label="Повторение">
+<q-select
+  v-model="event.recurrence"
+  radio
+  :options="[{label: 'Без', value: ''}, {label: 'Всеки месец', value: 'monthly'}, {label: 'Всяка седмица', value: 'weekly'}, {label: 'Всеки ден', value: 'daily'}, {label: 'Всяка година', value: 'yearly'}]"
+/>
 </q-field>
 
 <q-page-sticky position="bottom-right" :offset="[9, 9]">
@@ -26,6 +36,7 @@
     color="secondary"
     size="lg"
     icon="save"
+    @click="save"
   />
 </q-page-sticky>
 <q-page-sticky position="bottom-right" :offset="[18, 80]">
@@ -44,6 +55,7 @@
 </style>
 
 <script>
+import {modifyOrInsertEvent} from '../services/events'
 import { date } from 'quasar'
 
 export default {
@@ -51,22 +63,37 @@ export default {
   data () {
     return {
       event: {
-        start: new Date('2018-06-23T22:00:00'),
-        end: new Date('2018-08-23T22:00:00'),
+        start: new Date(),
+        end: new Date(),
         title: '',
         id: 0,
         location: '',
-        description: ''}
+        description: '',
+        fullDay: false,
+        recurrence: ''
+      }
     }
   },
   methods: {
-    formatDate: date.formatDate
+    save () {
+      modifyOrInsertEvent(this.event, () => {
+        this.$router.push('/')
+      })
+    }
   },
   computed: {
     date: {
       set (value) {
-        date.adjustDate(this.event.start, {year: value.getYear(), month: value.getMonth(), day: value.getDay()})
-        date.adjustDate(this.event.end, {year: value.getYear(), month: value.getMonth(), day: value.getDay()})
+        let start = date.clone(this.event.start)
+        let end = date.clone(this.event.end)
+        start.setFullYear(value.getFullYear())
+        start.setMonth(value.getMonth())
+        start.setDate(value.getDate())
+        end.setFullYear(value.getFullYear())
+        end.setMonth(value.getMonth())
+        end.setDate(value.getDate())
+        this.event.start = start
+        this.event.end = end
       },
       get () {
         return date.startOfDate(this.event.start, 'day')

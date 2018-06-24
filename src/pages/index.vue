@@ -3,14 +3,20 @@
 <q-infinite-scroll :handler="loadMore">
 
 <q-list>
-  <template v-for="(event, i) in events" v-if="event.start.getTime() >= fromDate.getTime()">
-    <q-list-header :key="event.id + 'h'" v-if="i == 0 || events[i - 1].start.getDate() != event.start.getDate()">
+  <div v-for="(event, i) in events" v-if="event.start.getTime() >= fromDate.getTime()" :key="event.id">
+    <q-list-header v-if="i == 0 || events[i - 1].start.getDate() != event.start.getDate()">
       {{formatDate(event.start, 'ddd, DD MMM, YYYY')}}
     </q-list-header>
-    <q-card :key="event.id">
-      <q-card-title>{{formatDate(event.start, 'hh:mm A')}} │ {{event.title}}</q-card-title>
+    <q-card>
+      <q-card-title>{{formatDate(event.start, 'hh:mm A')}} - {{formatDate(event.end, 'hh:mm A')}} │ {{event.title}}</q-card-title>
     </q-card>
-  </template>
+    <q-context-menu>
+      <q-list link separator no-border style="min-width: 150px; max-height: 300px;">
+        <q-item><q-item-main label="Редактирай" /></q-item>
+        <q-item><q-item-main label="Изтрий" /></q-item>
+      </q-list>
+    </q-context-menu>
+  </div>
 </q-list>
 
 <div style="text-align: center" slot="message">

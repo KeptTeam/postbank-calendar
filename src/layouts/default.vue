@@ -8,6 +8,7 @@
         </q-btn>
 
         <q-toolbar-title>
+          PostBank Календар
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
