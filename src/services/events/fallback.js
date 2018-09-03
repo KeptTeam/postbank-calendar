@@ -35,7 +35,7 @@ export class FallbackEventBackend {
     return !!window.localStorage
   }
 
-  delete (id, done) {
+  deleteEvent (id, done) {
     this.events[id] = null
     window.localStorage.setItem('events', JSON.stringify(this.events))
 
